@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>African Queen Braiding — Brooklyn's Home of Protective Styles</title>
+<meta name="description" content="Luxury braiding salon in Brooklyn. Box braids, knotless, cornrows, stitch braids & sew-ins. 1629 Pitkin Ave — book your crown today. 347-302-9363.">
+<meta property="og:title" content="African Queen Braiding — Brooklyn">
+<meta property="og:description" content="Every crown, handmade. Book box braids, knotless, cornrows, stitch braids & sew-ins at 1629 Pitkin Ave, Brooklyn.">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HairSalon","name":"African Queen Braiding",
+"address":{"@type":"PostalAddress","streetAddress":"1629 Pitkin Ave","addressLocality":"Brooklyn","addressRegion":"NY","addressCountry":"US"},
+"telephone":"+1-347-302-9363"}
+</script>
+
+<!-- ============================================================
+  AFRICAN QUEEN BRAIDING — single-file build (NewSites)
+  ASSET ARCHITECTURE (drop files beside this index.html):
+    assets/real_client_box_braids.jpg
+    assets/real_client_knotless.jpg
+    assets/real_client_cornrows.jpg
+    assets/real_client_stitch_braids.jpg
+    assets/real_client_weaves.jpg
+  Until the photos exist, the Polaroid shows a styled fallback —
+  the site never renders a broken image.
+
+  CONFIG (bottom <script>, top of file):
+    CALENDLY_URL  — the salon's Calendly event link. For the chat
+                    profile to land on the booking, add THREE custom
+                    questions to that Calendly event, in this order:
+                    1) Desired length  2) Ends & texture  3) Color
+                    (they map to prefill answers a1 / a2 / a3)
+    LEAD_ENDPOINT — optional NewSites capture, e.g.
+                    https://YOUR-CADDY-DOMAIN/contact-form
+                    Chat profiles POST here even if the visitor
+                    never finishes booking. Leave "" to disable.
+============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<style>
+:root{
+  --espresso:#120b0d;
+  --velvet:#1c1114;
+  --velvet-2:#241519;
+  --gold:#d4af37;
+  --gold-soft:#ecd9a0;
+  --rose:#e8927c;
+  --rose-deep:#c9705c;
+  --skin:#8f4f2f;
+  --cream:#f6ecdd;
+  --cream-dim:#cbb9a4;
+  --plait:#241a20;
+  --serif:'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans:'Jost', 'Segoe UI', system-ui, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--espresso);color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.6;overflow-x:hidden}
+::selection{background:var(--gold);color:var(--espresso)}
+a{color:var(--gold-soft);text-decoration:none}
+button{font-family:var(--sans);cursor:pointer;background:none;border:none;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+img{max-width:100%;display:block}
+
+.eyebrow{font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--gold) 80%,transparent);opacity:.45;border:none;margin:0 auto;max-width:1100px}
+
+/* ---------- intro ---------- */
+#intro{position:fixed;inset:0;background:var(--espresso);z-index:100;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease}
+#intro.done{opacity:0;pointer-events:none}
+#introCanvas{position:absolute;inset:0;width:100%;height:100%}
+#introTitle{position:relative;z-index:2;font-family:var(--serif);font-weight:600;color:var(--gold-soft);
+  font-size:clamp(1.9rem,6.4vw,4.6rem);letter-spacing:.14em;text-align:center;padding:0 4vw;
+  clip-path:inset(0 100% 0 0);text-shadow:0 0 34px rgba(212,175,55,.25);white-space:nowrap}
+#introSub{position:absolute;z-index:2;bottom:14vh;left:50%;transform:translateX(-50%);
+  font-size:.7rem;letter-spacing:.4em;text-transform:uppercase;color:var(--cream-dim);opacity:0;transition:opacity .8s}
+#skipIntro{position:absolute;top:22px;right:26px;z-index:3;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--cream-dim);border:1px solid rgba(246,236,221,.25);padding:9px 18px;border-radius:999px;transition:.25s}
+#skipIntro:hover{color:var(--gold);border-color:var(--gold)}
+
+/* ---------- header ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+  padding:16px clamp(18px,4vw,44px);opacity:0;transition:opacity .8s ease .1s;
+  background:linear-gradient(180deg,rgba(18,11,13,.92),rgba(18,11,13,0))}
+body.ready header{opacity:1}
+.wordmark{font-family:var(--serif);font-weight:600;letter-spacing:.12em;color:var(--gold-soft);font-size:1.02rem;text-transform:uppercase}
+.wordmark span{color:var(--rose)}
+.header-book{font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;font-weight:500;color:var(--gold);
+  border:1px solid var(--gold);padding:10px 20px;border-radius:999px;transition:.25s}
+.header-book:hover{background:var(--gold);color:var(--espresso)}
+
+/* ---------- hero / stage ---------- */
+main{opacity:0;transition:opacity .9s ease}
+body.ready main{opacity:1}
+#stage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(84px,12vh,120px) 16px 56px;position:relative}
+.stage-eyebrow{margin-bottom:clamp(10px,2vh,22px)}
+.avatar-wrap{position:relative;width:min(92vw,560px)}
+.avatar-halo{position:absolute;inset:-6%;background:radial-gradient(circle at 50% 34%,rgba(212,175,55,.16),transparent 58%);pointer-events:none}
+#avatarSvg{width:100%;height:auto;min-height:60vh;max-height:72vh;display:block;filter:drop-shadow(0 26px 60px rgba(0,0,0,.55))}
+@media (max-height:560px){#avatarSvg{min-height:0}}
+
+.nav-arrow{position:absolute;top:44%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;
+  border:1px solid var(--gold);color:var(--gold);font-size:1.15rem;display:flex;align-items:center;justify-content:center;
+  transition:.25s;z-index:5;background:rgba(18,11,13,.45);backdrop-filter:blur(3px)}
+.nav-arrow:hover{background:var(--gold);color:var(--espresso);transform:translateY(-50%) scale(1.06)}
+#prevStyle{left:calc(50% - min(46vw,340px))}
+#nextStyle{right:calc(50% - min(46vw,340px))}
+@media (max-width:640px){
+  .nav-arrow{width:46px;height:46px;top:auto;bottom:-8px;transform:none}
+  .nav-arrow:hover{transform:scale(1.06)}
+  #prevStyle{left:6vw}#nextStyle{right:6vw}
+}
+
+.style-name{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--cream);
+  font-size:clamp(2.1rem,6vw,3.6rem);letter-spacing:.02em;margin-top:6px;text-align:center;min-height:1.2em}
+.style-blurb{max-width:520px;text-align:center;color:var(--cream-dim);font-size:.98rem;margin-top:6px;min-height:3.1em;padding:0 12px}
+.style-dots{display:flex;gap:10px;margin-top:18px}
+.style-dots button{width:8px;height:8px;border-radius:50%;background:rgba(246,236,221,.22);transition:.3s;padding:0}
+.style-dots button.on{background:var(--gold);transform:scale(1.35)}
+
+#bookNow{margin-top:26px;font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;font-weight:600;
+  color:var(--espresso);background:linear-gradient(135deg,var(--gold-soft),var(--gold));padding:19px 54px;border-radius:999px;
+  box-shadow:0 10px 34px rgba(212,175,55,.28);transition:.3s}
+#bookNow:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(212,175,55,.4)}
+#profileChip{margin-top:14px;font-size:.8rem;color:var(--cream-dim);display:none;align-items:center;gap:10px}
+#profileChip.show{display:flex}
+#profileChip b{color:var(--gold-soft);font-weight:500}
+#profileChip button{color:var(--rose);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;border-bottom:1px solid var(--rose-deep)}
+
+/* ---------- polaroid ---------- */
+.polaroid{position:absolute;top:2%;right:calc(50% - min(47vw,352px));width:150px;transform:rotate(4deg);
+  background:#fbf7ef;padding:9px 9px 40px;box-shadow:0 16px 38px rgba(0,0,0,.5);cursor:pointer;transition:.3s;z-index:6}
+.polaroid:hover{transform:rotate(1.5deg) translateY(-4px)}
+.polaroid .ph{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;background:#241519}
+.polaroid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
+.polaroid img.loaded{opacity:1}
+.ph-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  background:radial-gradient(circle at 30% 20%,#3a2027,#1c1114);color:var(--gold-soft);text-align:center;padding:8px}
+.ph-fallback .crown{font-size:1.3rem}
+.ph-fallback small{font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-dim)}
+.polaroid figcaption{position:absolute;bottom:11px;left:0;right:0;text-align:center;color:#5a4436;
+  font-family:var(--serif);font-style:italic;font-size:.86rem}
+@media (max-width:760px){.polaroid{width:106px;padding:6px 6px 30px;right:4vw;top:0}
+  .polaroid figcaption{font-size:.7rem;bottom:7px}}
+
+/* fullscreen photo modal */
+#photoModal{position:fixed;inset:0;background:rgba(10,6,7,.94);z-index:80;display:none;align-items:center;justify-content:center;padding:5vw}
+#photoModal.open{display:flex;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#photoModal .frame{background:#fbf7ef;padding:16px 16px 58px;max-width:min(92vw,640px);width:100%;position:relative;
+  box-shadow:0 30px 90px rgba(0,0,0,.7);animation:popIn .35s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes popIn{from{transform:scale(.85) rotate(-2deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+#photoModal .ph{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;background:#241519}
+#photoModal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+#photoModal img.loaded{opacity:1}
+#photoModal figcaption{position:absolute;bottom:16px;left:0;right:0;text-align:center;color:#5a4436;font-family:var(--serif);font-style:italic;font-size:1.15rem}
+#photoClose{position:absolute;top:-16px;right:-16px;width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--espresso);font-size:1.1rem;font-weight:600;box-shadow:0 8px 22px rgba(0,0,0,.45)}
+
+/* ---------- chat ---------- */
+#chatModal{position:fixed;inset:0;z-index:70;display:none;align-items:flex-end;justify-content:center;background:rgba(10,6,7,.7);backdrop-filter:blur(4px)}
+#chatModal.open{display:flex}
+.chat-card{width:min(560px,100%);max-height:86vh;background:var(--velvet);border:1px solid rgba(212,175,55,.35);
+  border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden;
+  transform:translateY(30px);opacity:0;transition:.35s cubic-bezier(.2,.9,.3,1)}
+#chatModal.open .chat-card{transform:translateY(0);opacity:1}
+@media (min-width:640px){#chatModal{align-items:center;padding:4vh 16px}.chat-card{border-radius:22px}}
+.chat-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(212,175,55,.2)}
+.chat-head h3{font-family:var(--serif);font-weight:600;font-size:1.25rem;color:var(--gold-soft);letter-spacing:.04em}
+.chat-head small{display:block;font-family:var(--sans);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--cream-dim);margin-top:2px}
+#chatClose{font-size:1.3rem;color:var(--cream-dim);padding:4px 8px}
+#chatMsgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:220px}
+.msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:.94rem;line-height:1.5;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.bot{background:var(--velvet-2);border:1px solid rgba(212,175,55,.18);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.user{background:linear-gradient(135deg,var(--rose),var(--rose-deep));color:#2c130c;border-bottom-right-radius:4px;align-self:flex-end;font-weight:400}
+.msg.summary{border:1px solid var(--gold);background:rgba(212,175,55,.08);align-self:stretch;max-width:none}
+.msg.summary b{color:var(--gold-soft);font-weight:500}
+.typing{display:inline-flex;gap:5px;padding:14px 18px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+#chatChips{display:flex;flex-wrap:wrap;gap:8px;padding:4px 20px 12px}
+#chatChips button{border:1px solid var(--gold);color:var(--gold-soft);font-size:.8rem;padding:9px 16px;border-radius:999px;transition:.2s}
+#chatChips button:hover{background:var(--gold);color:var(--espresso)}
+.chat-input{display:flex;gap:10px;padding:14px 20px 20px;border-top:1px solid rgba(212,175,55,.15)}
+.chat-input input{flex:1;background:var(--velvet-2);border:1px solid rgba(246,236,221,.18);border-radius:999px;
+  padding:13px 20px;color:var(--cream);font-family:var(--sans);font-size:.94rem}
+.chat-input input::placeholder{color:rgba(246,236,221,.35)}
+.chat-input button{background:var(--gold);color:var(--espresso);border-radius:999px;padding:0 22px;font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase}
+.chat-cta{align-self:center;margin:6px 0 4px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:var(--espresso);
+  font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;font-weight:600;padding:15px 34px;border-radius:999px;animation:msgIn .4s ease}
+
+/* ---------- scheduler ---------- */
+#scheduler{padding:clamp(70px,11vh,120px) 18px;display:flex;flex-direction:column;align-items:center;gap:18px}
+#scheduler h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.6vw,3rem);color:var(--cream);text-align:center}
+#scheduler p.lede{color:var(--cream-dim);max-width:560px;text-align:center;font-size:.98rem}
+#schedulerMount{width:min(100%,860px);min-height:640px;border:1px solid rgba(212,175,55,.3);border-radius:18px;overflow:hidden;background:var(--velvet)}
+.sched-placeholder{min-height:640px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:36px}
+.sched-placeholder .crown{font-size:2.2rem}
+.sched-placeholder h3{font-family:var(--serif);font-weight:600;font-size:1.6rem;color:var(--gold-soft)}
+.sched-placeholder p{color:var(--cream-dim);max-width:420px;font-size:.95rem}
+.call-btn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--gold);color:var(--gold);
+  padding:16px 34px;border-radius:999px;font-size:.8rem;letter-spacing:.26em;text-transform:uppercase;font-weight:500;transition:.25s}
+.call-btn:hover{background:var(--gold);color:var(--espresso)}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid rgba(212,175,55,.25);padding:64px 20px 46px;text-align:center;background:linear-gradient(180deg,var(--espresso),#0c0708)}
+footer .mark{font-family:var(--serif);font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  font-size:clamp(1.3rem,3.6vw,2rem);color:var(--gold-soft)}
+footer .mark span{color:var(--rose)}
+footer .addr{margin-top:16px;color:var(--cream-dim);font-size:.95rem}
+footer .tel{display:inline-block;margin-top:10px;font-family:var(--serif);font-size:1.5rem;color:var(--gold);letter-spacing:.06em}
+footer .fine{margin-top:34px;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(246,236,221,.32)}
+footer .fine a{color:rgba(236,217,160,.55)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= CINEMATIC INTRO ================= -->
+<div id="intro" aria-hidden="true">
+  <canvas id="introCanvas"></canvas>
+  <h1 id="introTitle">AFRICAN&nbsp;QUEEN&nbsp;BRAIDING</h1>
+  <div id="introSub">Every crown, handmade — Brooklyn</div>
+  <button id="skipIntro" type="button">Skip</button>
+</div>
+
+<header>
+  <div class="wordmark">African <span>Queen</span> Braiding</div>
+  <button class="header-book" type="button" data-open-chat>Book</button>
+</header>
+
+<main>
+  <!-- ================= AVATAR STAGE ================= -->
+  <section id="stage" aria-label="Hairstyle viewer">
+    <div class="eyebrow stage-eyebrow">Brooklyn · Protective Styles</div>
+
+    <div class="avatar-wrap">
+      <div class="avatar-halo"></div>
+
+      <svg id="avatarSvg" viewBox="0 0 500 660" role="img" aria-label="Illustrated faceless woman modeling the selected hairstyle">
+        <defs>
+          <clipPath id="hairReveal"><rect id="hairRevealRect" x="0" y="0" width="500" height="660"/></clipPath>
+        </defs>
+
+        <!-- hair behind the head (generated) -->
+        <g id="hairBackDyn" clip-path="url(#hairReveal)"></g>
+
+        <!-- natural cloud (intro base, replaced by first style) -->
+        <g id="hairNatural">
+          <circle cx="168" cy="238" r="52" fill="#2b1c2e"/><circle cx="332" cy="238" r="52" fill="#2b1c2e"/>
+          <circle cx="146" cy="306" r="46" fill="#251728"/><circle cx="354" cy="306" r="46" fill="#251728"/>
+          <circle cx="196" cy="180" r="56" fill="#31203a"/><circle cx="304" cy="180" r="56" fill="#31203a"/>
+          <circle cx="250" cy="160" r="62" fill="#382548"/>
+          <circle cx="150" cy="372" r="38" fill="#211425"/><circle cx="350" cy="372" r="38" fill="#211425"/>
+        </g>
+
+        <!-- torso / shirt -->
+        <path d="M62,660 C62,556 128,472 250,472 C372,472 438,556 438,660 Z" fill="#e8927c"/>
+        <!-- scalloped collar -->
+        <g fill="#f2a894">
+          <circle cx="196" cy="478" r="11"/><circle cx="214" cy="472" r="11"/><circle cx="232" cy="468" r="11"/>
+          <circle cx="250" cy="466" r="11"/><circle cx="268" cy="468" r="11"/><circle cx="286" cy="472" r="11"/>
+          <circle cx="304" cy="478" r="11"/>
+        </g>
+
+        <!-- neck + head -->
+        <path d="M224,398 h52 v58 a26,26 0 0 1 -52,0 Z" fill="#7d4326"/>
+        <ellipse cx="250" cy="300" rx="96" ry="112" fill="#8f4f2f"/>
+        <!-- ear + earring -->
+        <ellipse cx="157" cy="318" rx="13" ry="17" fill="#8f4f2f"/>
+        <circle cx="157" cy="344" r="8" fill="#e8927c" stroke="#d4af37" stroke-width="2.5"/>
+
+        <!-- hair in front of the face line (generated) -->
+        <g id="hairFrontDyn" clip-path="url(#hairReveal)"></g>
+
+        <!-- transition shimmer -->
+        <g id="shimmer"></g>
+      </svg>
+
+      <button class="nav-arrow" id="prevStyle" type="button" aria-label="Previous hairstyle">&#10094;</button>
+      <button class="nav-arrow" id="nextStyle" type="button" aria-label="Next hairstyle">&#10095;</button>
+
+      <!-- Polaroid — swaps with the active style -->
+      <figure class="polaroid" id="polaroid" tabindex="0" role="button" aria-label="View client photo fullscreen">
+        <div class="ph">
+          <img id="polaroidImg" alt="Client wearing the selected style">
+          <div class="ph-fallback" id="polaroidFallback">
+            <div class="crown">👑</div>
+            <small id="polaroidFallbackText">Client photo<br>coming soon</small>
+          </div>
+        </div>
+        <figcaption id="polaroidCap">Box Braids</figcaption>
+      </figure>
+    </div>
+
+    <h2 class="style-name" id="styleName">Box Braids</h2>
+    <p class="style-blurb" id="styleBlurb"></p>
+    <div class="style-dots" id="styleDots" role="tablist" aria-label="Hairstyles"></div>
+
+    <button id="bookNow" type="button" data-open-chat>Book Now</button>
+    <div id="profileChip">
+      <span>Your look — <b id="profileChipText"></b></span>
+      <button type="button" id="profileEdit">Edit</button>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ================= SCHEDULER ================= -->
+  <section id="scheduler" aria-label="Book an appointment">
+    <div class="eyebrow">Reserve Your Crown</div>
+    <h2>Pick your date &amp; time</h2>
+    <p class="lede">Real openings, straight from the chair. Your style profile travels with the booking, so we're prepped before you walk in.</p>
+    <div id="schedulerMount"></div>
+  </section>
+</main>
+
+<!-- ================= CHAT MODAL ================= -->
+<div id="chatModal" role="dialog" aria-modal="true" aria-label="Design your look">
+  <div class="chat-card">
+    <div class="chat-head">
+      <div>
+        <h3>Design your crown</h3>
+        <small>3 quick questions before you book</small>
+      </div>
+      <button id="chatClose" type="button" aria-label="Close chat">✕</button>
+    </div>
+    <div id="chatMsgs"></div>
+    <div id="chatChips"></div>
+    <div class="chat-input">
+      <input id="chatInput" type="text" placeholder="Type your answer…" autocomplete="off">
+      <button id="chatSend" type="button">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FULLSCREEN PHOTO ================= -->
+<div id="photoModal" aria-modal="true" role="dialog" aria-label="Client photo">
+  <figure class="frame">
+    <button id="photoClose" type="button" aria-label="Close photo">✕</button>
+    <div class="ph">
+      <img id="photoModalImg" alt="Client wearing the selected style, fullscreen">
+      <div class="ph-fallback" id="photoModalFallback">
+        <div class="crown">👑</div>
+        <small>Real client photo lands here soon</small>
+      </div>
+    </div>
+    <figcaption id="photoModalCap"></figcaption>
+  </figure>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="mark">African <span>Queen</span> Braiding</div>
+  <p class="addr"><a href="https://maps.google.com/?q=1629+Pitkin+Ave,+Brooklyn,+NY" target="_blank" rel="noopener">1629 Pitkin Ave, Brooklyn, New York</a></p>
+  <a class="tel" href="tel:+13473029363">347‑302‑9363</a>
+  <p class="fine">Every crown, handmade · Site by <a href="https://stevendiolosa07-ship-it.github.io/NewSites" target="_blank" rel="noopener">NewSites</a></p>
+</footer>
+
+<script id="app">
+"use strict";
+
+/* ================= CONFIG ================= */
+const CONFIG = {
+  CALENDLY_URL: "",        // e.g. "https://calendly.com/african-queen-braiding/appointment"
+  LEAD_ENDPOINT: "",       // e.g. "https://YOUR-CADDY-DOMAIN/contact-form"  ("" = off)
+  PHONE_DISPLAY: "347-302-9363",
+  PHONE_TEL: "+13473029363",
+  ASSET_DIR: "assets/"
+};
+
+const STYLES = [
+  { key:"box_braids",    name:"Box Braids",       cap:"Box Braids",
+    blurb:"Clean parts, classic plaits — the timeless protective style with statement length." },
+  { key:"knotless",      name:"Knotless Braids",  cap:"Knotless",
+    blurb:"Feather-light, tension-free roots that lay flat from day one. All-day comfort, zero pull." },
+  { key:"cornrows",      name:"Cornrows",         cap:"Cornrows",
+    blurb:"Sculpted straight-backs and curved patterns, braided close and laid to perfection." },
+  { key:"stitch_braids", name:"Stitch Braids",    cap:"Stitch Braids",
+    blurb:"Sharp, defined feed-in rows with that signature stitch precision on every part." },
+  { key:"weaves",        name:"Weaves & Sew-Ins", cap:"Sew-In",
+    blurb:"Seamless, secure installs with flowing movement that reads natural from every angle." }
+];
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hasGsap = typeof window.gsap !== "undefined";
+let activeIdx = 0;
+let transitioning = false;
+const bookingProfile = { style:"", length:"", ends:"", color:"" }; // in-memory data-state
+
+const $ = (s)=>document.querySelector(s);
+
+/* ================= HAIR GENERATION ================= */
+/* Anchor points along the head dome: angle 200° → -20°, left to right. */
+function anchor(t){
+  const deg = 200 - t * 220;                        // 200° → -20°
+  const rad = deg * Math.PI / 180;
+  return { x: 250 + 94 * Math.cos(rad), y: 296 - 108 * Math.sin(rad) };
+}
+const rnd = (a,b)=>a + Math.random()*(b-a);
+function mkPath(d, stroke, w, dash, cap){
+  const p = document.createElementNS("http://www.w3.org/2000/svg","path");
+  p.setAttribute("d", d);
+  p.setAttribute("fill","none");
+  p.setAttribute("stroke", stroke);
+  p.setAttribute("stroke-width", w);
+  p.setAttribute("stroke-linecap", cap || "round");
+  if (dash) p.setAttribute("stroke-dasharray", dash);
+  return p;
+}
+/* Long hanging strand from a scalp anchor with gentle sway */
+function strandD(t, len, sway){
+  const a = anchor(t);
+  const endY = Math.min(636, a.y + len);
+  const midY = a.y + (endY - a.y) * .5;
+  const dir = t < .5 ? -1 : 1;
+  const spread = dir * (Math.abs(t - .5) * 2) * 60 + sway;
+  return `M ${a.x.toFixed(1)},${a.y.toFixed(1)} C ${(a.x + sway*.6).toFixed(1)},${midY.toFixed(1)} ${(a.x + spread).toFixed(1)},${(midY+60).toFixed(1)} ${(a.x + spread + sway*.4).toFixed(1)},${endY.toFixed(1)}`;
+}
+/* Cornrow arc over the dome, front hairline to nape */
+function rowD(offset){
+  const x0 = 250 + offset, top = 176 - Math.abs(offset)*.32;
+  return `M ${x0- Math.sign(offset||1)*6},214 C ${x0},${top} ${x0},${top} ${x0},248 C ${x0},330 ${x0 + offset*.18},372 ${250 + offset*.72},404`;
+}
+
+const BUILDERS = {
+  box_braids(back, front){
+    for (let i=0;i<18;i++){
+      const t = i/17, sway = rnd(-14,14), len = rnd(250,330);
+      const p = mkPath(strandD(t,len,sway), "#241a20", rnd(10,12), "13 4");
+      ((t<.16||t>.84) ? front : back).appendChild(p);
+    }
+  },
+  knotless(back, front){
+    for (let i=0;i<24;i++){
+      const t = i/23, sway = rnd(-12,12), len = rnd(280,352);
+      const p = mkPath(strandD(t,len,sway), "#1f161c", rnd(7,8.5), "11 3");
+      ((t<.14||t>.86) ? front : back).appendChild(p);
+    }
+  },
+  cornrows(back, front){
+    for (let i=0;i<9;i++){
+      const off = (i-4)*19;
+      front.appendChild(mkPath(rowD(off), "#241a20", 13, "10 3"));
+    }
+    for (let i=0;i<10;i++){                       // nape tails
+      const t = .32 + (i/9)*.36, sway = rnd(-8,8);
+      back.appendChild(mkPath(strandD(t, rnd(150,200), sway), "#241a20", 8, "10 3"));
+    }
+  },
+  stitch_braids(back, front){
+    for (let i=0;i<7;i++){
+      const off = (i-3)*26;
+      front.appendChild(mkPath(rowD(off), "#221820", 17, null, "butt"));
+      front.appendChild(mkPath(rowD(off), "#8a5a3a", 2.4, "3 9"));     // stitch ticks
+    }
+    for (let i=0;i<8;i++){
+      const t = .34 + (i/7)*.32;
+      back.appendChild(mkPath(strandD(t, rnd(180,240), rnd(-8,8)), "#221820", 10, "14 4"));
+    }
+  },
+  weaves(back, front){
+    for (let i=0;i<30;i++){
+      const t = i/29, sway = rnd(-24,24), len = rnd(300,372);
+      const shade = ["#191019","#211523","#281a28"][i%3];
+      const p = mkPath(strandD(t,len,sway), shade, rnd(5.5,7), null);
+      ((t<.12||t>.88) ? front : back).appendChild(p);
+    }
+    front.appendChild(mkPath(`M 168,206 C 210,168 290,168 332,206 C 300,186 200,186 168,206 Z`, "#281a28", 5)); // crown sheen
+  }
+};
+
+/* ================= STYLE ENGINE ================= */
+const backG = $("#hairBackDyn"), frontG = $("#hairFrontDyn"),
+      revealRect = $("#hairRevealRect"), shimmerG = $("#shimmer");
+
+function clearHair(){ backG.innerHTML=""; frontG.innerHTML=""; }
+
+function buildStyle(idx, animate){
+  const style = STYLES[idx];
+  clearHair();
+  $("#hairNatural").style.display = "none";
+  BUILDERS[style.key](backG, frontG);
+  bookingProfile.style = style.name;
+
+  const paths = [...backG.children, ...frontG.children];
+  if (animate && hasGsap && !reduceMotion){
+    revealRect.setAttribute("height", 0);
+    gsap.to(revealRect, { attr:{height:660}, duration:1.15, ease:"power2.out" });
+    gsap.from(paths, { opacity:0, y:-16, duration:.5, stagger:.014, ease:"power1.out" });
+    sparkle();
+  } else {
+    revealRect.setAttribute("height", 660);
+  }
+  // text + dots + polaroid
+  $("#styleName").textContent = style.name;
+  $("#styleBlurb").textContent = style.blurb;
+  document.querySelectorAll("#styleDots button").forEach((d,i)=>d.classList.toggle("on", i===idx));
+  setPolaroid(style);
+}
+
+function sparkle(){
+  shimmerG.innerHTML = "";
+  for (let i=0;i<6;i++){
+    const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    const a = anchor(rnd(.1,.9));
+    c.setAttribute("cx",a.x); c.setAttribute("cy",a.y); c.setAttribute("r",rnd(1.6,2.6));
+    c.setAttribute("fill","#ecd9a0");
+    shimmerG.appendChild(c);
+    gsap.fromTo(c,{opacity:0,scale:.4},{opacity:1,scale:1.4,duration:.3,delay:i*.09,yoyo:true,repeat:1,transformOrigin:"center",onComplete:()=>c.remove()});
+  }
+}
+
+function changeStyle(dir){
+  if (transitioning) return;
+  const next = (activeIdx + dir + STYLES.length) % STYLES.length;
+  const paths = [...backG.children, ...frontG.children];
+  if (hasGsap && !reduceMotion && paths.length){
+    transitioning = true;
+    gsap.to(paths, { opacity:0, y:-26, duration:.32, stagger:.006, ease:"power1.in",
+      onComplete(){ activeIdx = next; buildStyle(next, true); transitioning = false; } });
+  } else {
+    activeIdx = next; buildStyle(next, false);
+  }
+}
+
+/* ================= POLAROID ================= */
+function polaroidSrc(style){ return CONFIG.ASSET_DIR + "real_client_" + style.key + ".jpg"; }
+function wireImg(imgEl, fbEl, src){
+  imgEl.classList.remove("loaded"); fbEl.style.display = "flex";
+  imgEl.onload = ()=>{ imgEl.classList.add("loaded"); fbEl.style.display = "none"; };
+  imgEl.onerror = ()=>{ imgEl.classList.remove("loaded"); fbEl.style.display = "flex"; };
+  imgEl.src = src;
+}
+function setPolaroid(style){
+  $("#polaroidCap").textContent = style.cap;
+  wireImg($("#polaroidImg"), $("#polaroidFallback"), polaroidSrc(style));
+}
+$("#polaroid").addEventListener("click", openPhoto);
+$("#polaroid").addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();openPhoto();} });
+function openPhoto(){
+  const style = STYLES[activeIdx];
+  $("#photoModalCap").textContent = style.name + " — real client";
+  wireImg($("#photoModalImg"), $("#photoModalFallback"), polaroidSrc(style));
+  $("#photoModal").classList.add("open");
+}
+$("#photoClose").addEventListener("click", ()=>$("#photoModal").classList.remove("open"));
+$("#photoModal").addEventListener("click", e=>{ if(e.target.id==="photoModal") $("#photoModal").classList.remove("open"); });
+
+/* ================= NAV ================= */
+$("#prevStyle").addEventListener("click", ()=>changeStyle(-1));
+$("#nextStyle").addEventListener("click", ()=>changeStyle(1));
+document.addEventListener("keydown", e=>{
+  if ($("#chatModal").classList.contains("open")) return;
+  if (e.key==="ArrowLeft") changeStyle(-1);
+  if (e.key==="ArrowRight") changeStyle(1);
+  if (e.key==="Escape"){ $("#photoModal").classList.remove("open"); closeChat(); }
+});
+const dotsWrap = $("#styleDots");
+STYLES.forEach((s,i)=>{
+  const b = document.createElement("button");
+  b.type="button"; b.setAttribute("aria-label", s.name);
+  b.addEventListener("click", ()=>{ if(i!==activeIdx && !transitioning){ activeIdx=i; buildStyle(i,true);} });
+  dotsWrap.appendChild(b);
+});
+
+/* ================= CHAT ================= */
+const chatSteps = [
+  { key:"length", q:"Hey queen 👑 Let's design your look. How long are we going?",
+    chips:["Shoulder length","Mid-back","Waist length","Butt length"] },
+  { key:"ends", q:"Love it. What are we doing with the ends & texture?",
+    chips:["Goddess ends","Boho curls","Straight ends","Curly ends"] },
+  { key:"color", q:"Last one — what's the color story?",
+    chips:["1B natural","Honey blonde","Burgundy","Color mix"] }
+];
+let chatStep = -1;
+const msgs = $("#chatMsgs"), chips = $("#chatChips"), input = $("#chatInput");
+
+function openChat(reset){
+  $("#chatModal").classList.add("open");
+  if (reset || chatStep === -1){
+    msgs.innerHTML = ""; chips.innerHTML = ""; chatStep = -1;
+    botSay(`Booking <b>${STYLES[activeIdx].name}</b> — great choice.`, ()=>nextStep());
+  }
+  setTimeout(()=>input.focus(), 350);
+}
+function closeChat(){ $("#chatModal").classList.remove("open"); }
+document.querySelectorAll("[data-open-chat]").forEach(b=>b.addEventListener("click", ()=>openChat(false)));
+$("#chatClose").addEventListener("click", closeChat);
+$("#chatModal").addEventListener("click", e=>{ if(e.target.id==="chatModal") closeChat(); });
+$("#profileEdit").addEventListener("click", ()=>openChat(true));
+
+function el(cls, html){ const d=document.createElement("div"); d.className=cls; d.innerHTML=html; return d; }
+function scrollMsgs(){ msgs.scrollTop = msgs.scrollHeight; }
+function botSay(html, then){
+  const t = el("msg bot typing","<i></i><i></i><i></i>");
+  msgs.appendChild(t); scrollMsgs();
+  setTimeout(()=>{
+    t.classList.remove("typing"); t.innerHTML = html; scrollMsgs();
+    if (then) then();
+  }, reduceMotion ? 30 : 620);
+}
+function nextStep(){
+  chatStep++;
+  if (chatStep < chatSteps.length){
+    const s = chatSteps[chatStep];
+    botSay(s.q, ()=>{
+      chips.innerHTML = "";
+      s.chips.forEach(c=>{
+        const b=document.createElement("button"); b.type="button"; b.textContent=c;
+        b.addEventListener("click",()=>answer(c));
+        chips.appendChild(b);
+      });
+    });
+  } else finishChat();
+}
+function answer(text){
+  if (chatStep<0 || chatStep>=chatSteps.length) return;
+  chips.innerHTML = "";
+  msgs.appendChild(el("msg user", text.replace(/[<>]/g,""))); scrollMsgs();
+  bookingProfile[chatSteps[chatStep].key] = text;
+  nextStep();
+}
+$("#chatSend").addEventListener("click", ()=>{ if(input.value.trim()){ answer(input.value.trim()); input.value=""; } });
+input.addEventListener("keydown", e=>{ if(e.key==="Enter" && input.value.trim()){ answer(input.value.trim()); input.value=""; } });
+
+function finishChat(){
+  const p = bookingProfile;
+  botSay("Perfect. Here's your crown profile:", ()=>{
+    msgs.appendChild(el("msg summary",
+      `<b>${p.style}</b><br>Length — <b>${p.length}</b><br>Ends — <b>${p.ends}</b><br>Color — <b>${p.color}</b><br><span style="opacity:.7;font-size:.85em">This travels with your booking so we're prepped for you.</span>`));
+    const cta = document.createElement("button");
+    cta.className="chat-cta"; cta.type="button"; cta.textContent="Choose my date →";
+    cta.addEventListener("click", ()=>{
+      closeChat();
+      $("#profileChipText").textContent = `${p.length} · ${p.ends} · ${p.color}`;
+      $("#profileChip").classList.add("show");
+      mountScheduler(p);
+      sendLead(p);
+      $("#scheduler").scrollIntoView({behavior: reduceMotion ? "auto" : "smooth"});
+    });
+    msgs.appendChild(cta); scrollMsgs();
+  });
+}
+function sendLead(p){
+  if (!CONFIG.LEAD_ENDPOINT) return;
+  try{
+    fetch(CONFIG.LEAD_ENDPOINT, { method:"POST", headers:{"content-type":"application/json"},
+      body: JSON.stringify({ source:"african-queen-site", style:p.style, length:p.length, ends:p.ends, color:p.color, ts:new Date().toISOString() })
+    }).catch(()=>{});
+  }catch(e){}
+}
+
+/* ================= SCHEDULER ================= */
+let calendlyLoaded = false;
+function mountScheduler(profile){
+  const mount = $("#schedulerMount");
+  if (!CONFIG.CALENDLY_URL){
+    mount.innerHTML = `<div class="sched-placeholder">
+      <div class="crown">👑</div>
+      <h3>Hold your spot the classic way</h3>
+      <p>Online booking is arriving here shortly. Call or text now and we'll reserve your chair today${profile ? " — mention your <b style='color:var(--gold-soft)'>"+profile.style+"</b> profile" : ""}.</p>
+      <a class="call-btn" href="tel:${CONFIG.PHONE_TEL}">☎&nbsp; Call ${CONFIG.PHONE_DISPLAY}</a>
+    </div>`;
+    return;
+  }
+  const init = ()=>{
+    mount.innerHTML = "";
+    const prefill = profile ? { customAnswers: { a1: profile.length||"", a2: profile.ends||"", a3: (profile.color||"") + "  · style: " + (profile.style||"") } } : {};
+    window.Calendly.initInlineWidget({
+      url: CONFIG.CALENDLY_URL + (CONFIG.CALENDLY_URL.includes("?")?"&":"?") + "hide_gdpr_banner=1&background_color=1c1114&text_color=f6ecdd&primary_color=d4af37",
+      parentElement: mount,
+      prefill
+    });
+  };
+  if (window.Calendly){ init(); return; }
+  if (!calendlyLoaded){
+    calendlyLoaded = true;
+    const s = document.createElement("script");
+    s.src = "https://assets.calendly.com/assets/external/widget.js";
+    s.onload = init;
+    s.onerror = ()=>{ CONFIG.CALENDLY_URL=""; mountScheduler(profile); };
+    document.head.appendChild(s);
+  }
+}
+
+/* ================= CINEMATIC INTRO ================= */
+function startSite(){
+  document.body.classList.add("ready");
+  buildStyle(0, true);
+  mountScheduler(null);
+}
+(function intro(){
+  const overlay = $("#intro");
+  if (reduceMotion){ overlay.remove(); startSite(); return; }
+
+  const cv = $("#introCanvas"), ctx = cv.getContext("2d");
+  let W = cv.width = innerWidth, H = cv.height = innerHeight;
+  const N = W < 700 ? 44 : 92;
+  const strands = Array.from({length:N}, (_,i)=>({
+    x0: (i/(N-1)) * W + rnd(-14,14),
+    len: H * rnd(.55,.95),
+    amp: rnd(7,26), freq: rnd(.045,.115), phase: rnd(0,6.28),
+    shade: ["#1a1114","#241a20","#2b1c22","#31212b"][i%4],
+    wMax: rnd(3.4,6.2), cut: false, fall: 0
+  }));
+  const cutY = H * .47;
+  const T_GROW = 2000, T_CUT = 1050, T_HOLD = 420;
+  let start = null, raf = null, finished = false;
+
+  function drawStrand(s, grow, t){
+    ctx.strokeStyle = s.shade;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    const L = s.len * grow;
+    const fallY = s.cut ? s.fall : 0;
+    let started = false;
+    for (let d=0; d<=L; d+=9){
+      const y = H - d + (H - d > cutY && s.cut ? fallY : 0);
+      const x = s.x0 + Math.sin(d*s.freq + s.phase + t*.0006) * s.amp * (0.35 + d/s.len);
+      if (s.cut && H - d > cutY) ctx.globalAlpha = Math.max(0, 1 - fallY/240);
+      else ctx.globalAlpha = 1;
+      if (!started){ ctx.moveTo(x,y); started = true; } else ctx.lineTo(x,y);
+    }
+    ctx.lineWidth = 1.2 + s.wMax * grow;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  function drawScissors(x){
+    ctx.save(); ctx.translate(x, cutY);
+    ctx.strokeStyle = "#d4af37"; ctx.fillStyle = "#d4af37"; ctx.lineWidth = 3; ctx.lineCap="round";
+    ctx.beginPath(); ctx.moveTo(-46,-15); ctx.lineTo(30,4); ctx.stroke();     // blade 1
+    ctx.beginPath(); ctx.moveTo(-46, 15); ctx.lineTo(30,-4); ctx.stroke();    // blade 2
+    ctx.beginPath(); ctx.arc(-52,-17,8,0,6.29); ctx.stroke();                 // handle 1
+    ctx.beginPath(); ctx.arc(-52, 17,8,0,6.29); ctx.stroke();                 // handle 2
+    ctx.beginPath(); ctx.arc(-8,0,3.4,0,6.29); ctx.fill();                    // pivot
+    const g = ctx.createLinearGradient(-140,0,0,0);
+    g.addColorStop(0,"rgba(212,175,55,0)"); g.addColorStop(1,"rgba(236,217,160,.85)");
+    ctx.strokeStyle = g; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(-150,0); ctx.lineTo(-14,0); ctx.stroke();     // glint trail
+    ctx.restore();
+  }
+  function frame(ts){
+    if (finished) return;
+    if (!start) start = ts;
+    const t = ts - start;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = "#120b0d"; ctx.fillRect(0,0,W,H);
+
+    if (t < T_GROW){
+      const p = t / T_GROW, e = 1 - Math.pow(1-p, 3);
+      strands.forEach(s=>drawStrand(s, e, ts));
+    } else if (t < T_GROW + T_CUT){
+      const p = (t - T_GROW) / T_CUT;
+      const cutX = -60 + p * (W + 120);
+      strands.forEach(s=>{
+        if (!s.cut && s.x0 <= cutX) s.cut = true;
+        if (s.cut) s.fall += 5.2;
+        drawStrand(s, 1, ts);
+      });
+      drawScissors(cutX);
+      $("#introTitle").style.clipPath = `inset(0 ${Math.max(0, 100 - p*100)}% 0 0)`;
+      if (p > .55) $("#introSub").style.opacity = 1;
+    } else if (t < T_GROW + T_CUT + T_HOLD){
+      strands.forEach(s=>{ if(s.cut) s.fall += 5.2; drawStrand(s, 1, ts); });
+      $("#introTitle").style.clipPath = "inset(0 0% 0 0)";
+    } else { endIntro(); return; }
+    raf = requestAnimationFrame(frame);
+  }
+  function endIntro(){
+    if (finished) return;
+    finished = true;
+    cancelAnimationFrame(raf);
+    overlay.classList.add("done");
+    startSite();
+    setTimeout(()=>overlay.remove(), 700);
+  }
+  $("#skipIntro").addEventListener("click", endIntro);
+  overlay.addEventListener("click", e=>{ if(e.target!==$("#skipIntro")) endIntro(); });
+  addEventListener("resize", ()=>{ W = cv.width = innerWidth; H = cv.height = innerHeight; });
+  raf = requestAnimationFrame(frame);
+  setTimeout(endIntro, 5200);                       // hard safety cap
+})();
+</script>
+</body>
+</html>
