@@ -401,132 +401,148 @@ const bookingProfile = { style:"", length:"", ends:"", color:"" }; // in-memory 
 
 const $ = (s)=>document.querySelector(s);
 
-/* ================= HAIR GENERATION ================= */
-/* Head ellipse: c(250,300) r(96,112). Every style starts from a filled hair
-   CAP that hugs the skull (visible forehead hairline at y≈260), so hair is
-   always rooted. Parts / rows are drawn ON the cap; hanging strands anchor
-   under the cap edge and flare outward to frame the face. */
+/* ================= HAIR GENERATION v3 ================= */
+/* Head ellipse c(250,300) r(96,112). No puffy cap: braided styles render a
+   SCALP layer that matches the skull exactly — hair fill (or exposed-scalp
+   skin for cornrow/stitch tracks) clipped to the skull geometry, crisp
+   parting lines on it, root nubs on the silhouette, and braid strands
+   anchored ON the edge that drape over the shoulders in the front layer. */
 const rnd = (a,b)=>a + Math.random()*(b-a);
-/* Scalp anchors tucked under the cap. t: 0 left temple → 1 right temple */
-function anchor(t){
-  const deg = 200 - t * 220;                        // 200° → -20°
-  const rad = deg * Math.PI / 180;
-  return { x: 250 + 86 * Math.cos(rad), y: 294 - 98 * Math.sin(rad) };
+const SVGNS = "http://www.w3.org/2000/svg";
+const SCALP_SKIN = "#7a4326";                       // exposed scalp undertone
+function mk(tag, attrs){
+  const el = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
 }
 function mkPath(d, stroke, w, dash, cap){
-  const p = document.createElementNS("http://www.w3.org/2000/svg","path");
-  p.setAttribute("d", d);
-  p.setAttribute("fill","none");
-  p.setAttribute("stroke", stroke);
-  p.setAttribute("stroke-width", w);
-  p.setAttribute("stroke-linecap", cap || "round");
+  const p = mk("path", { d, fill:"none", stroke, "stroke-width":w, "stroke-linecap": cap || "round" });
   if (dash) p.setAttribute("stroke-dasharray", dash);
   return p;
 }
-function mkFill(d, fill){
-  const p = document.createElementNS("http://www.w3.org/2000/svg","path");
-  p.setAttribute("d", d);
-  p.setAttribute("fill", fill);
-  return p;
+function mkFill(d, fill){ return mk("path", { d, fill }); }
+/* Point on the head silhouette. t: 0 = left ear → 1 = right ear (over crown) */
+function edge(t, o){
+  o = o || 0;
+  const deg = 200 - t * 220, rad = deg * Math.PI / 180;
+  return { x: 250 + (96+o) * Math.cos(rad), y: 300 - (112+o) * Math.sin(rad) };
 }
-/* Filled hair cap. vol = crown volume, drop = how far the temples reach down */
-function capD(vol, drop){
-  vol = vol || 0; drop = drop || 0;
-  const top = 158 - vol, sx = 106 + vol*.5, ty = 334 + drop;
-  const L = 250 - sx*.66, R = 250 + sx*.66;
-  return `M ${L.toFixed(1)},${ty}
-    C ${(250-sx).toFixed(1)},250 ${250-74},${top} 250,${top}
-    C ${250+74},${top} ${(250+sx).toFixed(1)},250 ${R.toFixed(1)},${ty}
-    C ${250+58},${ty-30} ${250+46},260 250,260
-    C ${250-46},260 ${250-58},${ty-30} ${L.toFixed(1)},${ty} Z`;
+/* Scalp region: hugs the skull ear-to-ear with a crisp forehead hairline */
+function scalpD(o){
+  o = (o === undefined) ? 2 : o;
+  const L = edge(0, o), R = edge(1, o);
+  return `M ${L.x.toFixed(1)},${L.y.toFixed(1)} A ${96+o},${112+o} 0 1 1 ${R.x.toFixed(1)},${R.y.toFixed(1)} C 306,318 296,268 250,262 C 204,268 194,318 ${L.x.toFixed(1)},${L.y.toFixed(1)} Z`;
 }
-/* Skin-tone part lines radiating from the crown — visible roots */
-function addParts(g, n, color){
-  for (let i=1;i<n;i++){
-    const t = i/n, a = anchor(t);
-    const topX = 250 + (t-.5)*34;
-    g.appendChild(mkPath(`M ${topX.toFixed(1)},178 Q ${(250+(t-.5)*76).toFixed(1)},${((178+a.y)/2).toFixed(1)} ${a.x.toFixed(1)},${(a.y+4).toFixed(1)}`, color, 2));
-  }
+let scalpClipDone = false;
+function ensureScalpClip(){
+  if (scalpClipDone) return;
+  scalpClipDone = true;
+  const cp = mk("clipPath", { id:"scalpClip" });
+  cp.appendChild(mk("path", { d: scalpD(2) }));
+  document.querySelector("#avatarSvg defs").appendChild(cp);
 }
-/* Braided row ON the dome: from the forehead hairline arcing up over the
-   crown and disappearing behind it — reads as straight-backs from the front */
-function rowD(off){
-  return `M ${(250+off*.68).toFixed(1)},260 Q ${(250+off*.95).toFixed(1)},212 ${(250+off).toFixed(1)},${(171+Math.abs(off)*.35).toFixed(1)}`;
+/* Tiny root nub crossing the silhouette — braid bases visibly growing out */
+function rootD(t){
+  const a = edge(t, -3), b = edge(t, 4);
+  return `M ${a.x.toFixed(1)},${a.y.toFixed(1)} L ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
 }
-/* Hanging strand: rooted under the cap, flares OUT past the head silhouette */
-function strandD(t, len, sway){
-  const a = anchor(t);
-  const endY = Math.min(648, a.y + len);
-  const midY = a.y + (endY - a.y) * .5;
+/* Braid strand anchored ON the silhouette edge, draping outward past the
+   face and over the shoulder (rendered in the FRONT layer) */
+function drapeD(t, endY, sway){
+  const a = edge(t, 1);
   const dir = t < .5 ? -1 : 1;
-  const flare = dir * (34 + Math.abs(t - .5) * 2 * 78) + sway;
-  return `M ${a.x.toFixed(1)},${a.y.toFixed(1)} C ${(a.x + sway*.6).toFixed(1)},${midY.toFixed(1)} ${(a.x + flare).toFixed(1)},${(midY+60).toFixed(1)} ${(a.x + flare + sway*.4).toFixed(1)},${endY.toFixed(1)}`;
+  const outX = 250 + dir * (112 + Math.abs(t - .5) * 2 * 46) + sway;
+  const c1x = a.x + dir * 10, c1y = a.y + 50;
+  const c2y = (a.y + endY) / 2 + 40;
+  return `M ${a.x.toFixed(1)},${a.y.toFixed(1)} C ${c1x.toFixed(1)},${c1y.toFixed(1)} ${outX.toFixed(1)},${c2y.toFixed(1)} ${(outX + sway*.4).toFixed(1)},${endY.toFixed(1)}`;
 }
-/* Short braid segments lying on the cap, crown → hairline (rooted tops) */
-function addTopBraids(g, n, color, w, dash){
-  for (let i=0;i<n;i++){
-    const t = .1 + (i/(n-1))*.8, a = anchor(t);
-    g.appendChild(mkPath(`M ${(250+(t-.5)*34).toFixed(1)},178 Q ${(250+(t-.5)*80).toFixed(1)},${((178+a.y)/2+8).toFixed(1)} ${a.x.toFixed(1)},${(a.y+8).toFixed(1)}`, color, w, dash));
+/* Geometric box-part grid on the scalp (knotless / box braids) */
+function boxGrid(g, n){
+  for (let i=1;i<n;i++){
+    const t = i/n, e = edge(t, -4);
+    g.appendChild(mkPath(`M ${(250+(t-.5)*22).toFixed(1)},196 Q ${(250+(t-.5)*60).toFixed(1)},${((196+e.y)/2).toFixed(1)} ${e.x.toFixed(1)},${e.y.toFixed(1)}`, SCALP_SKIN, 2));
   }
+  g.appendChild(mkPath(`M 178,296 Q 250,206 322,296`, SCALP_SKIN, 2));
+}
+/* Parallel braided tracks hugging the skull, exposed scalp between rows.
+   Everything is clipped to the skull so rows can never float. */
+function trackRows(g, count, gap, rowColor, rowW, texture, texDash){
+  const wrap = mk("g", { "clip-path":"url(#scalpClip)" });
+  wrap.appendChild(mkFill(scalpD(2), SCALP_SKIN));
+  for (let i=0;i<count;i++){
+    const off = (i - (count-1)/2) * gap;
+    const d = `M ${(250+off*.6).toFixed(1)},352 C ${(250+off*.8).toFixed(1)},292 ${(250+off*.95).toFixed(1)},230 ${(250+off).toFixed(1)},166`;
+    wrap.appendChild(mkPath(d, rowColor, rowW, null, "butt"));
+    if (texture) wrap.appendChild(mkPath(d, texture, rowW*.32, texDash));
+  }
+  g.appendChild(wrap);
+}
+/* Sleek sew-in mane: one closed silhouette from crown down both sides,
+   covering the ears and framing the face — no rogue background shapes */
+function maneD(){
+  return `M 140,558 C 130,440 140,330 150,296 C 158,238 190,176 250,172 C 310,176 342,238 350,296 C 360,330 370,440 360,558 C 336,566 316,520 314,470 C 312,420 310,368 300,318 C 296,282 288,258 250,256 C 212,258 204,282 200,318 C 190,368 188,420 186,470 C 184,520 164,566 140,558 Z`;
 }
 
 const BUILDERS = {
   box_braids(back, front){
-    for (let i=0;i<20;i++){                                    // hanging plaits
-      const t = i/19, sway = rnd(-14,14), len = rnd(260,340);
-      const p = mkPath(strandD(t,len,sway), "#241a20", rnd(10,12), "13 4");
-      ((t<.18||t>.82) ? front : back).appendChild(p);
+    ensureScalpClip();
+    const wrap = mk("g", { "clip-path":"url(#scalpClip)" });
+    wrap.appendChild(mkFill(scalpD(2), "#241a20"));
+    boxGrid(wrap, 6);
+    front.appendChild(wrap);
+    for (let j=0;j<=11;j++) front.appendChild(mkPath(rootD(j/11), "#31232a", 6));
+    for (let i=0;i<9;i++){
+      const tl = .02 + (i/8)*.28;
+      for (const t of [tl, 1-tl]){
+        front.appendChild(mkPath(drapeD(t, rnd(480,620), rnd(-10,10)), "#241a20", rnd(9.5,11.5), "13 4"));
+      }
     }
-    front.appendChild(mkFill(capD(6,2), "#241a20"));           // rooted cap
-    addParts(front, 7, "#7a4527");                             // scalp parts
-    addTopBraids(front, 7, "#2e2128", 9, "11 3");              // braids on the dome
   },
   knotless(back, front){
-    for (let i=0;i<26;i++){
-      const t = i/25, sway = rnd(-12,12), len = rnd(290,360);
-      const p = mkPath(strandD(t,len,sway), "#1f161c", rnd(7,8.5), "11 3");
-      ((t<.16||t>.84) ? front : back).appendChild(p);
+    ensureScalpClip();
+    const wrap = mk("g", { "clip-path":"url(#scalpClip)" });
+    wrap.appendChild(mkFill(scalpD(2), "#1f161c"));
+    boxGrid(wrap, 8);
+    front.appendChild(wrap);
+    for (let j=0;j<=13;j++) front.appendChild(mkPath(rootD(j/13), "#2a1d24", 4));
+    for (let i=0;i<12;i++){
+      const tl = .02 + (i/11)*.30;
+      for (const t of [tl, 1-tl]){
+        front.appendChild(mkPath(drapeD(t, rnd(500,640), rnd(-8,8)), "#1f161c", rnd(6.5,8), "11 3"));
+      }
     }
-    front.appendChild(mkFill(capD(4,2), "#1f161c"));
-    addParts(front, 9, "#7a4527");
-    addTopBraids(front, 9, "#2a1d24", 6.5, "9 3");
   },
   cornrows(back, front){
-    for (let i=0;i<12;i++){                                    // nape tails
-      const t = .26 + (i/11)*.48, sway = rnd(-10,10);
-      back.appendChild(mkPath(strandD(t, rnd(150,205), sway), "#241a20", 8, "10 3"));
-    }
-    front.appendChild(mkFill(capD(1,4), "#1c1218"));           // scalp-hugging cap
-    for (let i=0;i<9;i++){
-      const off = (i-4)*19;
-      if (i>0) front.appendChild(mkPath(rowD(off-9.5), "#6e3c22", 1.6));  // skin part between rows
-      front.appendChild(mkPath(rowD(off), "#2e2128", 10));               // raised row
-      front.appendChild(mkPath(rowD(off), "#443039", 3.5, "7 5"));       // braid texture
+    ensureScalpClip();
+    trackRows(front, 9, 19, "#2e2128", 11, "#443039", "7 5");
+    for (let i=0;i<5;i++){
+      const tl = .015 + i*.028;
+      for (const t of [tl, 1-tl]){
+        front.appendChild(mkPath(drapeD(t, rnd(430,520), rnd(-6,6)), "#241a20", 7.5, "10 3"));
+      }
     }
   },
   stitch_braids(back, front){
-    for (let i=0;i<10;i++){
-      const t = .28 + (i/9)*.44;
-      back.appendChild(mkPath(strandD(t, rnd(190,250), rnd(-8,8)), "#221820", 10, "14 4"));
-    }
-    front.appendChild(mkFill(capD(1,4), "#191016"));
-    for (let i=0;i<7;i++){
-      const off = (i-3)*26;
-      if (i>0) front.appendChild(mkPath(rowD(off-13), "#6e3c22", 2));    // sharp skin part
-      front.appendChild(mkPath(rowD(off), "#2b1f27", 14, null, "butt")); // chunky row
-      front.appendChild(mkPath(rowD(off), "#8a5a3a", 2.4, "3 9"));       // stitch ticks
+    ensureScalpClip();
+    trackRows(front, 7, 26, "#2b1f27", 15, "#8a5a3a", "3 9");
+    for (let i=0;i<4;i++){
+      const tl = .015 + i*.032;
+      for (const t of [tl, 1-tl]){
+        front.appendChild(mkPath(drapeD(t, rnd(440,540), rnd(-6,6)), "#221820", 9, "14 4"));
+      }
     }
   },
   weaves(back, front){
-    for (let i=0;i<32;i++){
-      const t = i/31, sway = rnd(-26,26), len = rnd(300,380);
-      const shade = ["#191019","#211523","#281a28"][i%3];
-      const p = mkPath(strandD(t,len,sway), shade, rnd(5.5,7), null);
-      ((t<.14||t>.86) ? front : back).appendChild(p);
+    front.appendChild(mkFill(maneD(), "#211523"));
+    for (let k=0;k<3;k++){
+      const xl = 176 + k*9, xr = 324 - k*9;
+      front.appendChild(mkPath(`M ${xl},300 C ${xl-8},380 ${xl-6},460 ${xl-2},536`, "#181020", 2.2));
+      front.appendChild(mkPath(`M ${xr},300 C ${xr+8},380 ${xr+6},460 ${xr+2},536`, "#181020", 2.2));
     }
-    front.appendChild(mkFill(capD(14,10), "#211523"));         // full glossy cap
-    front.appendChild(mkPath(`M 250,166 C 250,206 250,236 250,258`, "#120a10", 3)); // middle part
-    front.appendChild(mkPath(`M 186,216 Q 250,158 314,216`, "#3a2a3e", 5));         // crown sheen
+    front.appendChild(mkPath(`M 250,176 L 250,256`, "#120a10", 2.5));      // sleek middle part
+    front.appendChild(mkPath(`M 196,216 Q 250,176 304,216`, "#3a2a3e", 4)); // crown sheen
+    front.appendChild(mkPath(`M 168,320 C 160,400 162,470 168,532`, "#332238", 3.5));
+    front.appendChild(mkPath(`M 332,320 C 340,400 338,470 332,532`, "#332238", 3.5));
   }
 };
 
@@ -539,7 +555,8 @@ function clearHair(){ backG.innerHTML=""; frontG.innerHTML=""; }
 function buildStyle(idx, animate){
   const style = STYLES[idx];
   clearHair();
-  $("#hairNatural").style.display = "none";
+  const hn = document.getElementById("hairNatural");
+  if (hn) hn.remove();                       // default cloud fully removed from DOM
   BUILDERS[style.key](backG, frontG);
   bookingProfile.style = style.name;
 
@@ -563,7 +580,7 @@ function sparkle(){
   shimmerG.innerHTML = "";
   for (let i=0;i<6;i++){
     const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
-    const a = anchor(rnd(.1,.9));
+    const a = edge(rnd(.1,.9), 2);
     c.setAttribute("cx",a.x); c.setAttribute("cy",a.y); c.setAttribute("r",rnd(1.6,2.6));
     c.setAttribute("fill","#ecd9a0");
     shimmerG.appendChild(c);
